@@ -1,11 +1,9 @@
 package Drivers;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import Drivers.helper.MyPlan;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +11,7 @@ import java.util.List;
 public class MyPlanDriver {
 
     public final int MAX_NUMBER_OF_CLASSES = 7;
+    public final String URL = "https://sdb.admin.uw.edu/students/uwnetid/register.asp";
 
     private WebDriver driver;
 
@@ -22,8 +21,7 @@ public class MyPlanDriver {
      * @param password Password for the account
      */
     public MyPlanDriver(String netid, String password) {
-        setDriver();
-        login(netid, password);
+        driver = MyPlan.getDriver(URL, netid, password);
     }
 
     /**
@@ -38,6 +36,7 @@ public class MyPlanDriver {
             ));
             toEnter.clear();
             toEnter.sendKeys(sln);
+            driver.findElement(By.id("regform")).submit();
             return checkStatus();
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,19 +46,20 @@ public class MyPlanDriver {
 
     public boolean addCourses(String[] sln) {
         try {
-            WebElement input;
-            for (int i = 2; i < sln.length + 2; i++) {
-                input = driver.findElement(By.cssSelector(
-                        "#regform > p:nth-child(6) > table > tbody > tr:nth-child(" + i + ") > td:nth-child(2) > input[type=TEXT]"
+            for (int i = 0; i < sln.length; i++) {
+                WebElement input = driver.findElement(By.cssSelector(
+                        "#regform > p:nth-child(6) > table > tbody > tr:nth-child(" + (i + 2) + ") > td:nth-child(2) > input[type=TEXT]"
                 ));
                 input.clear();
-                input.sendKeys();
+                input.sendKeys(sln[i]);
             }
             driver.findElement(By.id("regform")).submit();
             return checkStatus();
         } catch (Exception e){
             e.printStackTrace();
             return false;
+        } finally {
+            clearTable();
         }
     }
 
@@ -97,10 +97,12 @@ public class MyPlanDriver {
     public List<String> registeredCourses() {
         List<String> list = new ArrayList<>();
         for (int i = 3; i <= MAX_NUMBER_OF_CLASSES + 3; i++) {
-            String selector = "#regform > p:nth-child(5) > table > tbody > tr:nth-child(" + i + ") > td:nth-child(6) > tt";
+            String sln = "#regform > p:nth-child(5) > table > tbody > tr:nth-child(" + i + ") > td:nth-child(6) > tt";
+            String courseName = "#regform > p:nth-child(5) > table > tbody > tr:nth-child(" + i + ") > td:nth-child(7) > tt";
             try {
-                WebElement input = driver.findElement(By.cssSelector(selector));
-                list.add(input.getText());
+                WebElement input = driver.findElement(By.cssSelector(sln));
+                WebElement name = driver.findElement(By.cssSelector(courseName));
+                list.add(name.getText() + " (" + input.getText() + ")");
             } catch (org.openqa.selenium.NoSuchElementException e) {
                 break;
             }
@@ -108,10 +110,25 @@ public class MyPlanDriver {
         return list;
     }
 
+    private void clearTable() {
+        int i = 2;
+        while (true) {
+            String selector = "#regform > p:nth-child(6) > table > tbody > tr:nth-child(" + i + ") > td:nth-child(2) > input[type=TEXT]";
+            try {
+                WebElement input = driver.findElement(By.cssSelector(selector));
+                input.clear();
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+                return;
+            }
+            i++;
+        }
+    }
+
     /**
      * Returns the message delivered by MyPlan regarding the status of the last attempted change made to MyPlan.
      * @return The message conveyed by MyPlan as a String.
      */
+    //TODO: Add functionality to display accurate message if task not successful. (The error message in the table we put the SLN in).
     public String getCurrentStatus() {
         try {
             WebElement status = driver.findElement(By.cssSelector("#doneDiv > b"));
@@ -142,26 +159,5 @@ public class MyPlanDriver {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Sets up the new driver in the system. <b>Setup will be different for every system</b>
-     */
-    private void setDriver() {
-        WebDriverManager.chromedriver().setup(); // Line 2
-        ChromeOptions options = new ChromeOptions();
-        driver = new ChromeDriver(options);
-        driver.get("https://sdb.admin.uw.edu/students/uwnetid/register.asp");
-    }
-
-    /**
-     * Logs in to the given username of the driver
-     */
-    private void login(String netid, String password) {
-        WebElement id = driver.findElement(By.id("weblogin_netid"));
-        WebElement pw = driver.findElement(By.id("weblogin_password"));
-        id.sendKeys(netid);
-        pw.sendKeys(password);
-        driver.findElement(By.id("submit_button")).click();
     }
 }

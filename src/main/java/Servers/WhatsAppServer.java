@@ -23,17 +23,32 @@ public class WhatsAppServer {
             String result;
             String command = req.queryParams("Body");
             String[] info = command.split(" ");
-            switch (info[0].toLowerCase()) {
-                case "register":
-                    result =  Boolean.toString(driver.addCourse(info[1]));
-                    System.out.println("Register " + info[1]);
-                    break;
-                case "remove":
-                    System.out.println("Remove " + info[1]);
-                    result = Boolean.toString(driver.removeCourse(info[1]));
-                    break;
-                default:
-                    result = Arrays.toString(driver.registeredCourses().toArray());
+            if (info.length <= 2) {
+                switch (info[0].toLowerCase()) {
+                    case "register":
+                        driver.addCourse(info[1]);
+                        result = driver.getCurrentStatus();
+                        System.out.println("Register " + info[1]);
+                        break;
+                    case "remove":
+                        System.out.println("Remove " + info[1]);
+                        driver.removeCourse(info[1]);
+                        result = driver.getCurrentStatus();
+                        break;
+                    default:
+                        //TODO: Show the SLN and the name of the courses
+                        result = Arrays.toString(driver.registeredCourses().toArray());
+                }
+                // TODO: Change remove to list of remove
+            } else {
+                switch (info[0].toLowerCase()) {
+                    case "register":
+                        driver.addCourses(Arrays.copyOfRange(info, 1, info.length));
+                        result = driver.getCurrentStatus();
+                        break;
+                    default:
+                        result = Arrays.toString(driver.registeredCourses().toArray());
+                }
             }
 
             // Default template to follow to send a message back to the user on WhatsApp

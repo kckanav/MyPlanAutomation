@@ -1,4 +1,5 @@
 import Drivers.MyPlanDriver;
+import Drivers.SLNSearchDriver;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -6,11 +7,8 @@ import java.util.Collections;
 public class Main {
 
     public static void main(String[]args){
-        MyPlanDriver d = new MyPlanDriver("kckanav", "Softpastels23");
-//        d.addCourse("10558");
-//        d.removeCourse("10558");
-        System.out.println(d.registeredCourses().toString());
-        d.close();
+        SLNSearchDriver d = new SLNSearchDriver();
+        d.searchClass("CSE 351");
     }
 
 //    public static void main(String[] args) {
