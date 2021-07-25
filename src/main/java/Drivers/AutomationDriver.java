@@ -14,8 +14,8 @@ import java.util.Properties;
 public class AutomationDriver {
 
     public final PhoneNumber SENDER_NUMBER = new PhoneNumber("whatsapp:+14155238886");
-    public final String AUTH_TOKEN = "9b120685f5a71395d394589ab5a48d2e";
-    public final String ACCOUNT_SID = "ACe02391aed0dd7dcdbdaf8a994045b7c2";
+    public final String AUTH_TOKEN = "***************";
+    public final String ACCOUNT_SID = "*******************";
     public final int NUMBER_OF_EMAILS_TO_CHECK = 4;
 
     public final String NOTIFY_UW_EMAIL = "<kckanav@uw.edu>";

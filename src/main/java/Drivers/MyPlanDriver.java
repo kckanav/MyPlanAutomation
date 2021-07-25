@@ -1,9 +1,12 @@
 package Drivers;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +36,28 @@ public class MyPlanDriver {
             WebElement toEnter = driver.findElement(By.cssSelector(
                     "#regform > p:nth-child(6) > table > tbody > tr:nth-child(2) > td:nth-child(2) > input[type=TEXT]"
             ));
+            toEnter.clear();
             toEnter.sendKeys(sln);
-            driver.findElement(By.id("regform")).submit();
             return checkStatus();
         } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean addCourses(String[] sln) {
+        try {
+            WebElement input;
+            for (int i = 2; i < sln.length + 2; i++) {
+                input = driver.findElement(By.cssSelector(
+                        "#regform > p:nth-child(6) > table > tbody > tr:nth-child(" + i + ") > td:nth-child(2) > input[type=TEXT]"
+                ));
+                input.clear();
+                input.sendKeys();
+            }
+            driver.findElement(By.id("regform")).submit();
+            return checkStatus();
+        } catch (Exception e){
             e.printStackTrace();
             return false;
         }
@@ -88,6 +109,22 @@ public class MyPlanDriver {
     }
 
     /**
+     * Returns the message delivered by MyPlan regarding the status of the last attempted change made to MyPlan.
+     * @return The message conveyed by MyPlan as a String.
+     */
+    public String getCurrentStatus() {
+        try {
+            WebElement status = driver.findElement(By.cssSelector("#doneDiv > b"));
+            String result = status.getText();
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            driver.close();
+            return "Error communicating with MyPlan. Please check and try again. (Error at MyPlanDriver.getCurrentStatus)";
+        }
+    }
+
+    /**
      * Closes the connection and logs out of the user's MyPlan
      */
     public void close() {
@@ -96,20 +133,13 @@ public class MyPlanDriver {
 
     /**
      * Checks the status of the last change made by the driver in the user's MyPlan
-     * @return
+     * @return true if the last move made changes successfully, false otherwise.
      */
     private boolean checkStatus() {
-        try {
-            WebElement status = driver.findElement(By.cssSelector("#doneDiv > b"));
-            String result = status.getText();
-            if (result.equals("Schedule updated.")) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            driver.close();
+        String result = getCurrentStatus();
+        if (result.equals("Schedule updated.")) {
+            return true;
+        } else {
             return false;
         }
     }
@@ -118,8 +148,9 @@ public class MyPlanDriver {
      * Sets up the new driver in the system. <b>Setup will be different for every system</b>
      */
     private void setDriver() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\cance\\Downloads\\chromedriver_win32 (1)\\chromedriver.exe");
-        driver = new ChromeDriver();
+        WebDriverManager.chromedriver().setup(); // Line 2
+        ChromeOptions options = new ChromeOptions();
+        driver = new ChromeDriver(options);
         driver.get("https://sdb.admin.uw.edu/students/uwnetid/register.asp");
     }
 
