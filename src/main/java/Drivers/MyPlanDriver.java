@@ -1,6 +1,6 @@
 package Drivers;
 
-import Drivers.helper.MyPlan;
+import Drivers.helper.MyDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -21,7 +21,7 @@ public class MyPlanDriver {
      * @param password Password for the account
      */
     public MyPlanDriver(String netid, String password) {
-        driver = MyPlan.getDriver(URL, netid, password);
+        driver = MyDriver.getLogInDriver(URL, netid, password);
     }
 
     /**

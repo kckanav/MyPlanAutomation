@@ -8,8 +8,8 @@ public class Main {
 
     public static void main(String[]args){
         SLNSearchDriver d = new SLNSearchDriver();
-        System.out.println(d.searchClass("cse142").toString());
-        d.close();
+        System.out.println(d.searchClass("cse351"));
+//        d.close();
     }
 
 //    public static void main(String[] args) {

@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-public class MyPlan {
+public class MyDriver {
 
     /**
      * Generates a new WebDriver for the given URL, and assumes that the Given URL leads to a UW login page.
@@ -17,7 +17,7 @@ public class MyPlan {
      * @param password the password for the UW netid
      * @return a WebDriver with the URL open, after being logged in.
      */
-    public static WebDriver getDriver(String url, String netid, String password) {
+    public static WebDriver getLogInDriver(String url, String netid, String password) {
        WebDriver driver = setDriver();
         driver.get(url);
        login(driver, netid, password);
