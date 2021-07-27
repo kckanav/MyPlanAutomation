@@ -9,6 +9,14 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 public class MyPlan {
 
+    /**
+     * Generates a new WebDriver for the given URL, and assumes that the Given URL leads to a UW login page.
+     * It then logs in using the provided netId and password, and returns a WebDriver with the specifc URL open after logging in.
+     * @param url The url to be open. This URL must first point to a UW login page.
+     * @param netid the netid of the user
+     * @param password the password for the UW netid
+     * @return a WebDriver with the URL open, after being logged in.
+     */
     public static WebDriver getDriver(String url, String netid, String password) {
        WebDriver driver = setDriver();
         driver.get(url);
@@ -16,12 +24,21 @@ public class MyPlan {
        return driver;
     }
 
+    /**
+     * Generates a new WebDriver with the provided link opened.
+     * @param url the url to open
+     * @return A Chrome WebDriver with the specified link open.
+     */
     public static WebDriver openLink(String url) {
         WebDriver driver = setDriver();
         driver.get(url);
         return driver;
     }
 
+    /**
+     * Returns a new empty Chrome WebDriver.
+     * @return a new ChromeWebDriver.
+     */
     public static WebDriver getChromeDriver() {
         return setDriver();
     }

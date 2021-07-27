@@ -44,6 +44,13 @@ public class MyPlanDriver {
         }
     }
 
+    // TODO: Does not check if any of the courses were added in case the method returns false.
+    /**
+     * Attempts to add the list of courses provided to the user's MyPlan.
+     * @param sln the SLNs of the courses to be added
+     * @return true if all the courses were added to the user's MyPlan, false if any one
+     * one of the courses was not added to the schedule.
+     */
     public boolean addCourses(String[] sln) {
         try {
             for (int i = 0; i < sln.length; i++) {
@@ -110,20 +117,6 @@ public class MyPlanDriver {
         return list;
     }
 
-    private void clearTable() {
-        int i = 2;
-        while (true) {
-            String selector = "#regform > p:nth-child(6) > table > tbody > tr:nth-child(" + i + ") > td:nth-child(2) > input[type=TEXT]";
-            try {
-                WebElement input = driver.findElement(By.cssSelector(selector));
-                input.clear();
-            } catch (org.openqa.selenium.NoSuchElementException e) {
-                return;
-            }
-            i++;
-        }
-    }
-
     /**
      * Returns the message delivered by MyPlan regarding the status of the last attempted change made to MyPlan.
      * @return The message conveyed by MyPlan as a String.
@@ -158,6 +151,24 @@ public class MyPlanDriver {
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Clears the registration table for any previous SLNs that may be on
+     * the registration table.
+     */
+    private void clearTable() {
+        int i = 2;
+        while (true) {
+            String selector = "#regform > p:nth-child(6) > table > tbody > tr:nth-child(" + i + ") > td:nth-child(2) > input[type=TEXT]";
+            try {
+                WebElement input = driver.findElement(By.cssSelector(selector));
+                input.clear();
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+                return;
+            }
+            i++;
         }
     }
 }

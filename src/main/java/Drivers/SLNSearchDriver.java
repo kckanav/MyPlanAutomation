@@ -4,8 +4,6 @@ import Drivers.helper.MyPlan;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,25 +16,47 @@ public class SLNSearchDriver {
 
     private WebDriver driver;
 
+    /**
+     * Creats a new driver which can be used to search for classes.
+     */
     public SLNSearchDriver() {
         driver = MyPlan.getChromeDriver();
     }
 
+    /**
+     * Searches for all available lectures and classes for the given courseName.
+     * @param courseName the name of the course as DepartmentCode CourseNumber (eg. CSE 351).
+     *                  Any formating works. (cse351, cse 351, CsE351)
+     * @return A map with keys as the letter of the lecture, and the values being all available
+     *          sections/labs for that particular lecture. Only shows lectures which are currently available.
+     *
+     */
     public Map<String, List<String>> searchClass(String courseName) {
         driver.get(URL + courseName);
-        try {
-            Thread.sleep(2000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        sleep(2000);
         return getClassAvailability();
     }
 
+    /**
+     * Closes the driver. Call everytime you are done with using the driver.
+     */
     public void close() {
         driver.close();
     }
 
+    private void sleep(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Searches for the availibilty of the classes. Assumes that the driver is currently at the MyPlan page of the specifc course
+     * the user wants to search for.
+     * @return Map, the same returned in searchClass(String courseName)
+     */
     private Map<String, List<String>> getClassAvailability() {
         Map<String, List<String>> classes = new HashMap<>();
         List<WebElement> table = driver.findElements(By.cssSelector(
@@ -64,33 +84,4 @@ public class SLNSearchDriver {
         }
         return classes;
     }
-
-
-
-    //    private void searchCorrectTerm() {
-//
-//        int i = 1;
-//        while (true) {
-//            WebElement curr;
-//            try {
-//                curr = driver.findElement(By.cssSelector(
-//                        "#main-content > form > div.Loader > div > div > div.col-lg-9.col-12 > div.card-panel.card > div.card-body > div > ul > li:nth-child(" + i +
-//                                ") > div.course-data-mobile.clearfix > span.course-term > span > abbr"
-//                ));
-//                System.out.println(curr.getText());
-//                if (curr.getText().equals(TERM_YEAR)) {
-//                    curr = driver.findElement(By.cssSelector(
-//                            "#main-content > form > div.Loader > div > div > div.col-lg-9.col-12 > div.card-panel.card > div.card-body > div > ul > li:nth-child(" + i +
-//                                    ") > div.course-data-mobile.clearfix > span.mobile-title > a > .course-title"
-//                    ));
-//                    curr.click();
-//                    return;
-//                }
-//                i++;
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                break;
-//            }
-//        }
-//    }
 }
