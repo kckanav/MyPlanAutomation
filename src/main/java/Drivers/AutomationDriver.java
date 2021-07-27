@@ -10,8 +10,9 @@ import javax.mail.Store;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
+import java.util.TimerTask;
 
-public class AutomationDriver {
+public class AutomationDriver extends TimerTask {
 
     public final PhoneNumber SENDER_NUMBER = new PhoneNumber("whatsapp:+14155238886");
     public final String AUTH_TOKEN = "***************";
@@ -25,6 +26,7 @@ public class AutomationDriver {
 
     public AutomationDriver(MyPlanDriver myplan) {
         this.myplan = myplan;
+        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
     }
 
     public void setNotifyUwIncoming(String username, String password) {
@@ -49,7 +51,7 @@ public class AutomationDriver {
     }
 
     private void sendMessage(String message) {
-        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+
     }
 
     public void run() {

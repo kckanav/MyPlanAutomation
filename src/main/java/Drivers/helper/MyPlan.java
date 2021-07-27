@@ -10,19 +10,29 @@ import org.openqa.selenium.chrome.ChromeOptions;
 public class MyPlan {
 
     public static WebDriver getDriver(String url, String netid, String password) {
-       WebDriver driver = setDriver(url);
+       WebDriver driver = setDriver();
+        driver.get(url);
        login(driver, netid, password);
        return driver;
+    }
+
+    public static WebDriver openLink(String url) {
+        WebDriver driver = setDriver();
+        driver.get(url);
+        return driver;
+    }
+
+    public static WebDriver getChromeDriver() {
+        return setDriver();
     }
 
     /**
      * Sets up the new driver in the system. <b>Setup will be different for every system</b>
      */
-    private static WebDriver setDriver(String url) {
+    private static WebDriver setDriver() {
         WebDriverManager.chromedriver().setup(); // Line 2
         ChromeOptions options = new ChromeOptions();
         WebDriver driver = new ChromeDriver(options);
-        driver.get(url);
         return driver;
     }
 

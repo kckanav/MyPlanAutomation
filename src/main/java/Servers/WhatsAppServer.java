@@ -1,6 +1,7 @@
 package Servers;
 
 import Drivers.MyPlanDriver;
+import Drivers.SLNSearchDriver;
 import Servers.Utils.CORSFilter;
 import com.twilio.twiml.MessagingResponse;
 import com.twilio.twiml.messaging.Body;
@@ -17,6 +18,7 @@ public class WhatsAppServer {
         corsFilter.apply();
 
         MyPlanDriver driver = new MyPlanDriver("kckanav", "Softpastels23");
+        SLNSearchDriver search = new SLNSearchDriver();
 
         Spark.post("/sms", (req, res) -> {
             res.type("application/xml");
@@ -25,6 +27,9 @@ public class WhatsAppServer {
             String[] info = command.split(" ");
             if (info.length <= 2) {
                 switch (info[0].toLowerCase()) {
+                    case "find":
+                        result = search.searchClass(info[1]).toString();
+                        break;
                     case "register":
                         driver.addCourse(info[1]);
                         result = driver.getCurrentStatus();
